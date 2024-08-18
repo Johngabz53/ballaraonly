@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Form</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .navbar {
+        background-color: #333;
+        color: #fff;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .navbar ul {
+        list-style: none;
+        display: flex;
+      }
+      .navbar ul li {
+        margin-right: 1rem;
+      }
+      .navbar ul li a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        max-width: 400px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      label {
+        margin-bottom: 10px;
+        color: blue;
+      }
+
+      input,
+      select,
+      button {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      button {
+        background-color: blue;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      .mtcn {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mtcn">
+      <h4 style="color: blue; font-size: 28px">MTCN</h4>
+      <form id="payment-form">
+        <label for="payment-method">Payment Method</label>
+        <select id="platform" title="platform" name="currency" required>
+          <option value="paypal">PAYPAL</option>
+          <option value="airtm">AIRTM</option>
+          <!-- Add more options as needed -->
+        </select>
+
+        <label for="currency">Currency</label>
+        <select id="currency" name="currency" required>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="PKR">PKR</option>
+          <option value="NZD">NZD</option>
+          <option value="TRY">TRY</option>
+          <option value="BRL">BRL</option>
+          <option value="GHS">GHS</option>
+          <option value="JMD">JMD</option>
+          <option value="MYR">MYR</option>
+          <option value="MAD">MAD</option>
+          <option value="PLN">PLN</option>
+        </select>
+
+        <label for="amount">Amount</label>
+        <input
+          type="number"
+          id="amount"
+          placeholder="e.g. 100"
+          name="amount"
+          required
+        />
+
+        <label for="date">Initiation Date</label>
+        <input type="date" id="date" name="date" disabled />
+
+        <label for="dateIn">Processing Date</label>
+        <input type="date" id="dateIn" name="daten" disabled />
+
+        <button type="button" id="generate-code-button">Generate Code</button>
+      </form>
+    </div>
+
+    <script>
+      const amount = document.getElementById("amount");
+      const paymentMethod = document.getElementById("platform");
+      const currency = document.getElementById("currency");
+      const generateCodeButton = document.getElementById(
+        "generate-code-button"
+      );
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // Function to generate random code
+        function generateRandomCode() {
+          let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+          let code = "";
+          for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+              let randomIndex = Math.floor(Math.random() * characters.length);
+              code += characters.charAt(randomIndex);
+            }
+            if (i < 2) code += "-";
+          }
+          return code;
+        }
+
+        // Function to set current date in the date input
+        function setCurrentDate() {
+          let currentDate = new Date().toISOString().split("T")[0];
+          document.getElementById("date").value = currentDate;
+          document.getElementById("dateIn").value = currentDate;
+        }
+
+        // Set current date on page load
+        setCurrentDate();
+
+        // Button click event to generate code and store in local storage
+        document
+          .getElementById("generate-code-button")
+          .addEventListener("click", function () {
+            if (
+              amount.value == "" ||
+              paymentMethod.value == "" ||
+              currency.value == ""
+            ) {
+              alert("Please fill all the fields");
+              return;
+            }
+
+            let code = generateRandomCode();
+            localStorage.setItem("paymentCode", code);
+            localStorage.setItem("amount", amount.value);
+            localStorage.setItem("paymentMethod", paymentMethod.value);
+            localStorage.setItem("currency", currency.value);
+            location.href = "../progress";
+          });
+      });
+    </script>
+  </body>
+</html>
